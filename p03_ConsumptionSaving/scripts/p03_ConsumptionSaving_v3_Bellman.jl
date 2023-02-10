@@ -1,6 +1,6 @@
 ##############################################################################################
 # A consumption-saving problem 
-# v3 - Use the Bellman equation method instead of the Euler equation method
+# v3 - Use the Bellman equation method
 ##############################################################################################
 
 ##############################################################################################
@@ -14,9 +14,10 @@ using DrWatson
 # Specifications
 const prec = 1.0f0                              # Set floating point precision
 const dtype = "midpoint"                         # Type of numerical derivative for value function
-const wgt_R1 = oftype(prec,0.5) #0.5)                 # Weight on Bellman equation error
+const wgt_R1 = oftype(prec,1.0)                 # Weight on Bellman equation error
 const wgt_R2 = oftype(prec,1.0)                # Weight on Kuhn-Tucker error
-const wgt_R3 = oftype(prec,1.0) #0.5)                 # Weight on definition of normalized KT multiplpier
+const wgt_R3 = oftype(prec,1.0)                # Weight on definition of normalized KT multiplpier
+const wgt_util = oftype(prec,100.0)             # Multiplicative scalar on period utility function
 
 # Include the requisite objects
 include(srcdir("p03_Packages.jl"))              # Julia packages

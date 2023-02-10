@@ -32,7 +32,13 @@ end
 
 # Period utility
 function u_c(c)
-    return (c.^(oftype(prec,1.0) .- γ) .- oftype(prec,1.0))./(oftype(prec,1.0) .- γ)
+    #return (c.^(oftype(prec,1.0) .- γ) .- oftype(prec,1.0))./(oftype(prec,1.0) .- γ)
+    return wgt_util.*(c.^(oftype(prec,1.0) .- γ) .- oftype(prec,1.0))./(oftype(prec,1.0) .- γ)
+end
+
+function uprime_c(c)
+    #return c.^(-γ)
+    return wgt_util.*c.^(-γ)
 end
 
 # Consumer policy function
@@ -84,8 +90,8 @@ end
 function hh_residuals(m,e_r,e_δ,e_p,e_q,r,δ,p,q,w)
 
     # Today's choices
-    #ζ, h, v = hh_policy_fn(m,r,δ,p,q,w)
-    ζ, h, v, dv = hh_policy_fn(m,r,δ,p,q,w,dtype)
+    ζ, h, v = hh_policy_fn(m,r,δ,p,q,w)
+    #ζ, h, v, dv = hh_policy_fn(m,r,δ,p,q,w,dtype)
     c = ζ.*w
 
     # Exogenous state transitions conditional on specified shocks
@@ -104,7 +110,8 @@ function hh_residuals(m,e_r,e_δ,e_p,e_q,r,δ,p,q,w)
     # Residuals
     R1 = v .- u_c(c) .- β.*exp.(δnext .- δ).*vnext                      # Bellman equation error
     R2 = Ψ_fb(oftype(prec,1.0) .- h, oftype(prec,1.0) .- ζ)             # Kuhn-Tucker condition error
-    R3 = β.*rbar.*exp.(δnext .- δ .+ rnext).*(c.^γ).*dvnext .- h        # Definition of normalized KT multiplpier
+    R3 = β.*rbar.*exp.(δnext .- δ .+ rnext)./uprime_c(c).*dvnext .- h        # Definition of normalized KT multiplpier
+    #R3 = β.*rbar.*exp.(δnext .- δ .+ rnext).*(c.^γ).*dvnext .- h        # Definition of normalized KT multiplpier
 
     #R4 = (oftype(prec,1.0) .- h).*(dvnext .- cnext.^(-γ))                              # Envelope condition error for next period if constraint is slack (i.e., h = 1)
     #R4 = (oftype(prec,1.0) .- h).*(dv .- c.^(-γ))    
@@ -117,7 +124,6 @@ end
 # Objective function
 function loss(m)
 
-    
     r = randn(typeof(prec), 1, n).*σ_e_r
     δ = randn(typeof(prec), 1, n).*σ_e_δ
     p = randn(typeof(prec), 1, n).*σ_e_p
