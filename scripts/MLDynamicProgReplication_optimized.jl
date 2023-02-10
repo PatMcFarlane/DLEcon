@@ -10,7 +10,7 @@ using Statistics
 #----------------------
 
 #variable to determine floating point precision
-const prec = 1f0
+const prec = 1e0
 
 #Behavioural parameters
 const β = oftype(prec, 0.9)
