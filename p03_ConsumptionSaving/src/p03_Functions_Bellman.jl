@@ -105,16 +105,15 @@ function hh_residuals(m,e_r,e_δ,e_p,e_q,r,δ,p,q,w)
 
     # Tomorrow's choices
     ζnext, hnext, vnext, dvnext = hh_policy_fn(m,rnext,δnext,pnext,qnext,wnext,dtype)
-    cnext = ζnext.*wnext
+    #cnext = ζnext.*wnext
 
     # Residuals
     R1 = v .- u_c(c) .- β.*exp.(δnext .- δ).*vnext                      # Bellman equation error
     R2 = Ψ_fb(oftype(prec,1.0) .- h, oftype(prec,1.0) .- ζ)             # Kuhn-Tucker condition error
     R3 = β.*rbar.*exp.(δnext .- δ .+ rnext)./uprime_c(c).*dvnext .- h        # Definition of normalized KT multiplpier
-    #R3 = β.*rbar.*exp.(δnext .- δ .+ rnext).*(c.^γ).*dvnext .- h        # Definition of normalized KT multiplpier
 
-    #R4 = (oftype(prec,1.0) .- h).*(dvnext .- cnext.^(-γ))                              # Envelope condition error for next period if constraint is slack (i.e., h = 1)
-    #R4 = (oftype(prec,1.0) .- h).*(dv .- c.^(-γ))    
+    #R4 = dvnext .- cnext.^(-γ)                              # Envelope condition error for next period
+    #R4 = dv .- c.^(-γ)    
 
     return R1, R2, R3
     #return R1, R2, R3, R4
